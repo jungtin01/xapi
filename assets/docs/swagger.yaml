@@ -1,0 +1,994 @@
+swagger: "2.0"
+info:
+  description: "Xcaller API documentation for development team"
+  version: "0.1"
+  title: "xCaller API"
+  contact:
+    email: "longnkh@dfk-com.vn"
+host: "xc.connecteq.tk"
+basePath: ""
+tags:
+- name: "User Management"
+  description: "Authentication & manage users / employees"
+- name: "ShopInfo Management"
+  description: "Information of Shop"
+- name: "xCaller Devices Management"
+  description: "Flexible ways to manage xCaller devices"
+- name: "Battery Info"
+  description: "Provide useful information about device batteries"
+- name: "Employee WorkSession Assignment"
+  description: "Manage Work Sessions (e.g: Sang: 7:00 - 12:00, Trua: 12:00 - 17:00)"
+- name: "Customer Request"
+  description: "Communication between customers and employees' Shop needs these APIs"
+- name: "Logging"
+  description: "All operations will be logged and can be retrived"
+
+schemes:
+- "HTTPS"
+paths:
+  /api/authorization:
+    post:
+      tags:
+      - "User Management"
+      summary: "Authorization"
+      parameters:
+      - name: "username"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      - name: "password"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "invalid username/password"
+  /api/logout:
+    post:
+      tags:
+      - "User Management"
+      summary: "Logout"
+      responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "invalid token"
+  /api/user:
+    post:
+      tags:
+      - "User Management"
+      summary: "Create new user (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "username"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      - name: "password"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      - name: "name"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      - name: "status"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      - name: "role"
+        in: "body"
+        type: "integer"
+        description: "EMPLOYEE: 0, RECEPTIONIST: 5, ADMIN: 10"
+        required: true
+      - name: "description"
+        in: "body"
+        type: "string"
+        description: ""
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+  /api/my-profile/:
+    get:
+      tags:
+      - "User Management"
+      summary: "Get current logged-in user profile"
+      responses:
+        200:
+          description: "successful operation"
+  /api/user/{id}:
+    get:
+      tags:
+      - "User Management"
+      summary: "Get profile of a user (Permission: Admin, Receptionist)"
+      responses:
+        200:
+          description: "successful operation"
+    put:
+      tags:
+      - "User Management"
+      summary: "Update user info  (Permission: Admin, Receptionist)"
+      consumes:
+        - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "UserID which is provided by system"
+        required: true
+        type: "string"
+      - name: "name"
+        in: "body"
+        type: "string"
+        description: ""
+        required: false
+      - name: "password"
+        in: "body"
+        type: "string"
+        description: ""
+        required: false
+      - name: "status"
+        in: "body"
+        type: "string"
+        description: ""
+        required: false
+      - name: "description"
+        in: "body"
+        type: "string"
+        description: ""
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+    delete:
+      tags:
+      - "User Management"
+      summary: "Delete a user  (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "UserID which is provided by system"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+  /api/user/change_password:
+    post:
+      tags:
+      - "User Management"
+      summary: "Change current user's password"
+      parameters:
+      - name: "password"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/users/:
+    get:
+      tags:
+      - "User Management"
+      summary: "Get all users  (Permission: Admin, Receptionist)"
+      responses:
+        200:
+          description: "successful operation"
+  /api/shopinfo:
+    get:
+      tags:
+      - "ShopInfo Management"
+      summary: "Get ShopInfo"
+      responses:
+        200:
+          description: "successful operation"
+    post:
+      tags:
+      - "ShopInfo Management"
+      summary: "Create new shop (Admin only)"
+      parameters:
+      - name: "shopName"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      - name: "address"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      - name: "contactInfo"
+        in: "body"
+        type: "string"
+        description: ""
+        required: true
+      - name: "maxWaitingTime"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      - name: "maxRequestPerEmployee"
+        in: "body"
+        type: "integer"
+        description: ""
+        required: false
+      - name: "maxRequestTimeout"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      - name: "logLevel"
+        in: "body"
+        type: "string"
+        description: "info, debug, fatal, ..."
+        required: false
+      - name: "openTime"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      - name: "closeTime"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      - name: "requestTtl"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      - name: "suser"
+        in: "body"
+        type: "string"
+        description: "Sync username for shop (this field is optional but it is highly recommended to be have)"
+        required: false
+      - name: "spwd"
+        in: "body"
+        type: "string"
+        description: "Password of sync account (this field is optional but it is highly recommended to be have)"
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+  /api/shopinfo/{id}:
+    put:
+      tags:
+      - "ShopInfo Management"
+      summary: "Update shopinfo (Admin only)"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "ShopId is returned by system"
+        required: true
+      - name: "shopName"
+        in: "body"
+        type: "string"
+        description: ""
+        required: false
+      - name: "address"
+        in: "body"
+        type: "string"
+        description: ""
+        required: false
+      - name: "contactInfo"
+        in: "body"
+        type: "string"
+        description: ""
+        required: false
+      - name: "maxWaitingTime"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      - name: "maxRequestPerEmployee"
+        in: "body"
+        type: "integer"
+        description: ""
+        required: false
+      - name: "maxRequestTimeout"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      - name: "logLevel"
+        in: "body"
+        type: "string"
+        description: "info, debug, fatal, ..."
+        required: false
+      - name: "openTime"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      - name: "closeTime"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      - name: "requestTtl"
+        in: "body"
+        type: "integer"
+        description: "in seconds"
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+  /api/shoppwd:
+    put:
+      tags:
+      - "ShopInfo Management"
+      summary: "Update sync account for shop (Admin only)"
+      parameters:
+      - name: "suser"
+        in: "body"
+        type: "string"
+        description: "Sync username for shop"
+        required: true
+      - name: "oldSpwd"
+        in: "body"
+        type: "string"
+        description: "Current password of sync account"
+        required: true
+      - name: "newSpwd"
+        in: "body"
+        type: "string"
+        description: "New password of sync account"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/shopsacc:
+    put:
+      tags:
+      - "ShopInfo Management"
+      summary: "Update sync account for shop (Admin only)"
+      parameters:
+      - name: "oldSuser"
+        in: "body"
+        type: "string"
+        description: "Current sync username for shop"
+        required: true
+      - name: "newSuser"
+        in: "body"
+        type: "string"
+        description: "New sync username for shop"
+        required: true
+      - name: "oldSpwd"
+        in: "body"
+        type: "string"
+        description: "Current password of sync account"
+        required: true
+      - name: "newSpwd"
+        in: "body"
+        type: "string"
+        description: "New password of sync account"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/add-xcaller:
+    post:
+      tags:
+      - "xCaller Devices Management"
+      summary: "ON/OFF allow adding new xcaller (Admin only)"
+      parameters:
+      - name: "action"
+        in: "body"
+        type: "string"
+        description: "on / off"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/xcaller:
+    post:
+      tags:
+      - "xCaller Devices Management"
+      summary: "Create new xcaller (Admin only)"
+      parameters:
+      - name: "xcallerName"
+        in: "body"
+        type: "string"
+        description: "xcaller name (must be unique)"
+        required: true
+      - name: "xcallerId"
+        in: "body"
+        type: "string"
+        description: "This xCaller Id is tagged by user (not auto-generated number)"
+        required: true
+      - name: "remainingBatteryTimeInHour"
+        in: "body"
+        type: "integer"
+        description: "remaining time in hours"
+        required: false
+      - name: "remainingBatteryValue"
+        in: "body"
+        type: "number"
+        format: "float"
+        description: "remaining battery volume"
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+  /api/xcaller/{id}:
+    delete:
+      tags:
+      - "xCaller Devices Management"
+      summary: "Delete xcaller (Admin only)"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "device id is returned by API (auto generated number)"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+    put:
+      tags:
+      - "xCaller Devices Management"
+      summary: "Update xcaller (Admin only)"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "device id is returned by API (auto generated number)"
+        required: true
+      - name: "xcallerName"
+        in: "body"
+        type: "string"
+        description: "xcaller name (must be unique)"
+        required: false
+      - name: "xcallerId"
+        in: "body"
+        type: "string"
+        description: "id return by API (auto generated number)"
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+    get:
+      tags:
+      - "xCaller Devices Management"
+      summary: "Get specific xcaller device info"
+      parameters:
+      responses:
+        200:
+          description: "successful operation"
+  /api/xcallers:
+    get:
+      tags:
+      - "xCaller Devices Management"
+      summary: "Get all xcallers"
+      responses:
+        200:
+          description: "successful operation"
+  /api/assign-table:
+    post:
+      tags:
+      - "xCaller Devices Management"
+      summary: "Assign a table to a user (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "userId"
+        in: "body"
+        type: "string"
+        description: "UserID which is provided by system. Username is required if userId is missing"
+        required: true
+      - name: "username"
+        in: "body"
+        type: "string"
+        description: "Username is required if userId is missing"
+        required: false
+      - name: "xcallerName"
+        in: "body"
+        type: "string"
+        description: "xcaller name (must be unique)"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/remove-table:
+    post:
+      tags:
+      - "xCaller Devices Management"
+      summary: "Remove a table to a user (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "userId"
+        in: "body"
+        type: "string"
+        description: "UserID which is provided by system. Username is required if userId is missing"
+        required: true
+      - name: "username"
+        in: "body"
+        type: "string"
+        description: "Username is required if userId is missing"
+        required: false
+      - name: "xcallerName"
+        in: "body"
+        type: "string"
+        description: "xcaller name (must be unique)"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/batterySetting:
+    get:
+      tags:
+      - "Battery Info"
+      summary: "Get battery setting info (Admin only)"
+      responses:
+        200:
+          description: "successful operation"
+  /api/updateBatterySetting:
+    put:
+      tags:
+      - "Battery Info"
+      summary: "Update battery setting info (Admin only)"
+      parameters:
+      - name: "upperLimit"
+        in: "body"
+        type: "number"
+        format: "float"
+        description: "Maximum Battery power"
+        required: true
+      - name: "lowerLimit"
+        in: "body"
+        type: "number"
+        format: "float"
+        description: "Minimum Battery power"
+        required: true
+      - name: "alertThreshold"
+        in: "body"
+        type: "number"
+        format: "float"
+        description: "System will notify if xcaller device's battery <= this threshold"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/batteryStatus/{id}:
+    get:
+      tags:
+      - "Battery Info"
+      summary: "Get current battery information of device (Admin only)"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "id return by API (auto generated id)"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+    put:
+      tags:
+      - "Battery Info"
+      summary: "Update battery power value (Admin only)"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "id return by API (auto generated id)"
+        required: true
+      - name: "remainingBatteryValue"
+        in: "body"
+        type: "number"
+        format: "float"
+        description: "Estimated remaining battery power"
+        required: false
+      - name: "remainingBatteryTimeInHour"
+        in: "body"
+        type: "integer"
+        description: "Estimated remaining battery time"
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+  /api/session:
+    post:
+      tags:
+      - "Employee WorkSession Assignment"
+      summary: "Create new work session (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "sessionName"
+        in: "body"
+        type: "string"
+        description: "Name of the work session"
+        required: true
+      - name: "timeFrom"
+        in: "body"
+        type: "integer"
+        description: "Time in second of a day (e.g: 6:15 is 6*3600+15*60=22500)"
+        required: true
+      - name: "timeTo"
+        in: "body"
+        type: "integer"
+        description: "Time in second of a day (e.g: 19:00 is 19*3600+0*60=68400)"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/sessions:
+    get:
+      tags:
+      - "Employee WorkSession Assignment"
+      summary: "Get all current work sessions"
+      responses:
+        200:
+          description: "successful operation"
+  /api/session/{id}:
+    get:
+      tags:
+      - "Employee WorkSession Assignment"
+      summary: "Get information of a work session"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "Work Session Id is returned by system"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+    put:
+      tags:
+      - "Employee WorkSession Assignment"
+      summary: "Update information of a work session (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "Work Session Id is returned by system"
+        required: true
+      - name: "sessionName"
+        in: "body"
+        type: "string"
+        description: "Name of the work session"
+        required: false
+      - name: "timeFrom"
+        in: "body"
+        type: "integer"
+        description: "Time in second of a day (e.g: 6:15 is 6*3600+15*60=22500)"
+        required: false
+      - name: "timeTo"
+        in: "body"
+        type: "integer"
+        description: "Time in second of a day (e.g: 19:00 is 19*3600+0*60=68400)"
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+    delete:
+      tags:
+      - "Employee WorkSession Assignment"
+      summary: "Delete a work session (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "Work Session Id is returned by system"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/assign-work-session:
+    post:
+      tags:
+      - "Employee WorkSession Assignment"
+      summary: "Assign a work session to a user (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "userId"
+        in: "body"
+        type: "string"
+        description: "UserID which is provided by system. Username is required if userId is missing"
+        required: true
+      - name: "username"
+        in: "body"
+        type: "string"
+        description: "Username is required if userId is missing"
+        required: false
+      - name: "sessionId"
+        in: "body"
+        type: "string"
+        description: "Work Session Id is returned by system"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/remove-work-session:
+    post:
+      tags:
+      - "Employee WorkSession Assignment"
+      summary: "Remove a work session for a user (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "userId"
+        in: "body"
+        type: "string"
+        description: "UserID which is provided by system. Username is required if userId is missing"
+        required: true
+      - name: "username"
+        in: "body"
+        type: "string"
+        description: "Username is required if userId is missing"
+        required: false
+      - name: "sessionId"
+        in: "body"
+        type: "string"
+        description: "Work Session Id is returned by system"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/request:
+    post:
+      tags:
+      - "Customer Request"
+      summary: "Create new Customer Request (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "xcallerId"
+        in: "body"
+        type: "string"
+        description: "This xCaller Id is tagged by user (not auto-generated number)"
+        required: true
+      - name: "requestType"
+        in: "body"
+        type: "string"
+        description: "It must be 'M' (Menu), 'B' (Bill), 'C' (Call Employee), 'W' (Water)"
+        required: true
+        schema:
+          $ref: '#/components/schemas/CustomerRequestType'
+      responses:
+        200:
+          description: "successful operation"
+  /api/all-requests:
+    get:
+      tags:
+      - "Customer Request"
+      summary: "Get all customer request"
+      responses:
+        200:
+          description: "successful operation"
+  /api/test-all-requests:
+    get:
+      tags:
+      - "Customer Request"
+      summary: "Get all customer request (Permission: Admin, Receptionist). Limit to last 20 records (sorting from newer to older). Use page and size parameters to get custom records."
+      parameters:
+      - name: "page"
+        in: "path"
+        type: "integer"
+        description: "Page number. Default 1"
+        required: false
+      - name: "size"
+        in: "path"
+        type: "integer"
+        description: "Page size (max items of each page). Default 20"
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+  /api/test-newer-requests/:requestid:
+    get:
+      tags:
+      - "Customer Request"
+      summary: "Get all customer requests which are newer than request has id `requestid` (sorting from newer to older) (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "requestid"
+        in: "path"
+        type: "string"
+        description: "Customer Request Id is returned by system"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/request/:id:
+    get:
+      tags:
+      - "Customer Request"
+      summary: "Get a customer requests"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "Customer Request Id is returned by system"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+    delete:
+      tags:
+      - "Customer Request"
+      summary: "Delete a Customer request (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "Customer Request Id is returned by system"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/close-last-request/:xcallerId:
+    put:
+      tags:
+      - "Customer Request"
+      summary: "Close/Cancel last Customer request of a specific xcaller device (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "xcallerId"
+        in: "path"
+        type: "string"
+        description: "This xCaller Id is tagged by user (not auto-generated number)"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/update-req-status/:id:
+    put:
+      tags:
+      - "Customer Request"
+      summary: "Update Customer Request Status"
+      parameters:
+      - name: "requestStatus"
+        in: "body"
+        type: "string"
+        description: "Status must be 'N' (New to system and unassigned), 'R' (Received by Employee), or 'C' (Closed/Completed)"
+        schema:
+          $ref: '#/components/schemas/CustomerRequestStatus'
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/update-req-assignee/:id:
+    put:
+      tags:
+      - "Customer Request"
+      summary: "Update Employee to handle this Customer request (Admin only)"
+      parameters:
+      - name: "username"
+        in: "body"
+        type: "string"
+        description: "username of employee to handle this request (he can be any employee in the current system. This rule will be UPDATED LATER)"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/activities:
+    get:
+      tags:
+      - "Logging"
+      summary: "Get history of activities (Permission: Admin, Receptionist). Limit to last 20 records (sorting from newer to older). Use page and size parameters to get custom records"
+      parameters:
+      - name: "page"
+        in: "path"
+        type: "integer"
+        description: "Page number. Default 1"
+        required: false
+      - name: "size"
+        in: "path"
+        type: "integer"
+        description: "Page size (max items of each page). Default 20"
+        required: false
+      - name: "from"
+        in: "path"
+        type: "integer"
+        description: "From datetime, e.g: 2018-12-31. Default: yesterday"
+        required: false
+      - name: "to"
+        in: "path"
+        type: "integer"
+        description: "To datetime, e.g: 2019-01-01. Default: now"
+        required: false
+      responses:
+        200:
+          description: "successful operation"
+  /api/statistics:
+    get:
+      tags:
+      - "Logging"
+      summary: "Get daily statistics of activities (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "from"
+        in: "path"
+        type: "integer"
+        description: "From datetime, e.g: 2018-12-31"
+        required: true
+      - name: "to"
+        in: "path"
+        type: "integer"
+        description: "To datetime, e.g: 2019-01-01"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/hourly-statistics:
+    get:
+      tags:
+      - "Logging"
+      summary: "Get hourly statistics of activities (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "from"
+        in: "path"
+        type: "integer"
+        description: "From datetime, e.g: 2018-12-31 (default to beginning of the day), or 2018-12-31T02:21:00.717Z"
+        required: true
+      - name: "to"
+        in: "path"
+        type: "integer"
+        description: "To datetime, e.g: 2019-01-01 (default to beginning of the day)"
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+  /api/timesheets/:id:
+    get:
+      tags:
+      - "Logging"
+      summary: "Get a timesheet (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "id"
+        in: "path"
+        type: "string"
+        description: "Timesheet Id is returned by system"
+        required: true
+      responses:
+        200:
+          description: ""
+  /api/timesheets:
+    get:
+      tags:
+      - "Logging"
+      summary: "Get daily timesheet (Permission: Admin, Receptionist)"
+      parameters:
+      - name: "username"
+        in: "path"
+        type: "string"
+        description: "Username list, e.g: admin. To query multiple usernames, e.g: admin,receptionist"
+        required: true
+      - name: "page"
+        in: "path"
+        type: "integer"
+        description: "Page number. Default 1"
+        required: false
+      - name: "size"
+        in: "path"
+        type: "integer"
+        description: "Page size (max items of each page). Default 20"
+        required: false
+      - name: "from"
+        in: "path"
+        type: "integer"
+        description: "From datetime, e.g: 2018-12-31. Default: last month"
+        required: false
+      - name: "to"
+        in: "path"
+        type: "integer"
+        description: "To datetime, e.g: 2019-01-01. Default: now"
+        required: false
+      responses:
+        200:
+          description: ""
+
+
+components:
+  schemas:
+    CustomerRequestType:
+      type: string
+      enum:
+        - M # Menu
+        - B # Bill
+        - C # Call
+    CustomerRequestStatus:
+      type: string
+      enum:
+        - N # 'new' : just created to system, not received by any employee
+        - R # 'received' by employee
+        - C # 'completed' by employee

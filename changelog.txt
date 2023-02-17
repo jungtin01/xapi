@@ -1,0 +1,9 @@
+# Versioning rules
+xc: prefix, meaning xcaller
+xh: prefix, meaning xhospital
+....
+
+xc-0.1: xcaller version 0.1
+xc-latest: latest version of xcaller, this tag always changes everytime when
+we create a new tag
+....

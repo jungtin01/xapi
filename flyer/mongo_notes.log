@@ -1,0 +1,16 @@
+# Backup and Restore
+# Backup xcallerdb into ~/bak-db folder
+mongodump --db xcallerdb --out ~/bak-db
+
+# Restore db from ~/bak-db/xcaller to a db name xcallerdb, if xcallerdb is existed, drop it before restoring
+mongorestore --db xcallerdb --drop ~/bak-db/xcallerdb/
+
+
+# Export and Import
+# Export all users from xcallerdb to okok.json file
+mongoexport -d xcallerdb -o okok.json -c user
+
+# Import all records in okok.json file to xrentalhouse.user collection
+# all fields are exactly the same with okok.json file, including id
+mongoimport -d xrentalhouse -c user --file okok.json
+
